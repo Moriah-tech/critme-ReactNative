@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "CritMe",
+    "slug": "critme",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0E0F13",
+    "ios": {
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "CritMe needs access to your videos so you can post them."
+      }
+    },
+    "android": {
+      "edgeToEdgeEnabled": true
+    },
+    "plugins": [
+      "expo-video",
+      [
+        "expo-image-picker",
+        { "photosPermission": "CritMe needs access to your videos so you can post them." }
+      ]
+    ]
+  }
+}
