@@ -142,10 +142,12 @@ export function InboxScreen({ onNavigate, onCreate }: Props) {
           }
         >
           <View style={styles.noteAvatar}>
-            {index === 0 && (
+            {index === 0 ? (
               <View style={styles.plusBadge}>
                 <Text style={styles.plusText}>+</Text>
               </View>
+            ) : (
+              <View style={styles.noteBubble} />
             )}
           </View>
           <Text style={styles.noteName} numberOfLines={1}>
@@ -414,6 +416,18 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     lineHeight: 17,
+  },
+  noteBubble: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: 'rgba(214,236,255,0.22)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.35)',
+    boxShadow: 'inset 0 1px 3px rgba(255,255,255,0.35)',
   },
   noteName: {
     color: 'rgba(255,255,255,0.5)',
