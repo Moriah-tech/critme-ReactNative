@@ -167,7 +167,12 @@ export function ProfileScreen({ onNavigate, onCreate }: Props) {
         </Pressable>
       </View>
 
-      <Modal visible={editing} transparent animationType="slide">
+      <Modal
+        visible={editing}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setEditing(false)}
+      >
         <View style={styles.modalBackground}>
           <View style={styles.modal}>
             <Text style={styles.modalTitle}>Edit Profile</Text>

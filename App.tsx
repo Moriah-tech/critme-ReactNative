@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, BackHandler } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
@@ -16,8 +16,33 @@ export default function App() {
   const [video, setVideo] = useState<LocalVideo | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [currentScreen, setCurrentScreen] = useState<
-    'home' | 'profile' | 'inbox'|'friends'
+    'home' | 'profile' | 'inbox'
   >('home');
+
+  // One handler for every bottom nav. There is no Friends screen yet,
+  // so Friends shows the same "Coming soon" alert from every screen.
+  const navigate = (screen: 'home' | 'friends' | 'inbox' | 'profile') => {
+    if (screen === 'friends') {
+      Alert.alert('Coming soon', 'Friends screen is not connected yet.');
+      return;
+    }
+    setCurrentScreen(screen);
+  };
+
+  // Android hardware back: Profile and Inbox return to Home.
+  // On Home it's not handled, so Android does its default (leave the app).
+  // While a video is open, CreateScreen handles back itself.
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (video) return false;
+      if (currentScreen !== 'home') {
+        setCurrentScreen('home');
+        return true;
+      }
+      return false;
+    });
+    return () => sub.remove();
+  }, [video, currentScreen]);
 
   const pickVideo = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -65,16 +90,12 @@ export default function App() {
         />
       ) : currentScreen === 'profile' ? (
         <ProfileScreen
-          onNavigate={(screen) => {
-            setCurrentScreen(screen);
-          }}
+          onNavigate={navigate}
           onCreate={pickVideo}
         />
       ) : currentScreen === 'inbox' ? (
         <InboxScreen
-          onNavigate={(screen) => {
-            setCurrentScreen(screen);
-          }}
+          onNavigate={navigate}
           onCreate={pickVideo}
         />
       ) : (
@@ -82,13 +103,7 @@ export default function App() {
   posts={posts}
   onCreate={pickVideo}
   onProfile={() => setCurrentScreen('profile')}
-  onNavigate={(screen) => {
-    if (screen === 'friends') {
-      Alert.alert('Coming soon', 'Friends screen is not connected yet.');
-    } else {
-      setCurrentScreen(screen);
-    }
-  }}
+  onNavigate={navigate}
 />
       )}
     </SafeAreaProvider>

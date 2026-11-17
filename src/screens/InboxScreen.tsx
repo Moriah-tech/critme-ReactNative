@@ -10,6 +10,9 @@ import {
   View,
 } from 'react-native';
 import Svg, { Circle, Path, Line } from 'react-native-svg';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const NAV_HEIGHT = 72;
 
 type Chat = {
   id: string;
@@ -35,6 +38,7 @@ type Props = {
 };
 
 export function InboxScreen({ onNavigate, onCreate }: Props) {
+  const insets = useSafeAreaInsets();
   const [search, setSearch] = useState('');
   const [activeTab, setActiveTab] = useState<'chats' | 'notifications'>('chats');
 
@@ -55,7 +59,7 @@ export function InboxScreen({ onNavigate, onCreate }: Props) {
   };
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { paddingTop: insets.top + 18 }]}>
      
 
 {/* Header */}
@@ -155,7 +159,10 @@ export function InboxScreen({ onNavigate, onCreate }: Props) {
       data={filteredChats}
       keyExtractor={(item) => item.id}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.chatList}
+      contentContainerStyle={[
+        styles.chatList,
+        { paddingBottom: NAV_HEIGHT + insets.bottom + 24 },
+      ]}
       renderItem={({ item }) => (
         <Pressable
           style={styles.chatRow}
@@ -190,6 +197,7 @@ export function InboxScreen({ onNavigate, onCreate }: Props) {
 ) : (
   <FlatList
     style={styles.notificationFeed}
+    contentContainerStyle={{ paddingBottom: NAV_HEIGHT + insets.bottom + 24 }}
     data={[
       { id: '1', title: 'Elon on solar city' },
       { id: '2', title: 'My VC Funding Journey' },
@@ -275,7 +283,12 @@ renderItem={({ item, index }) => (
      
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
+      <View
+        style={[
+          styles.bottomNav,
+          { height: NAV_HEIGHT + insets.bottom, paddingBottom: 8 + insets.bottom },
+        ]}
+      >
         <Pressable
           style={styles.navItem}
           onPress={() => onNavigate?.('home')}
@@ -445,7 +458,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   bottomNav: {
-    height: 72,
+    height: NAV_HEIGHT,
     position: 'absolute',
     bottom: 0,
     left: 0,

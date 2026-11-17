@@ -12,9 +12,6 @@
         "NSPhotoLibraryUsageDescription": "CritMe needs access to your videos so you can post them."
       }
     },
-    "android": {
-      "edgeToEdgeEnabled": true
-    },
     "plugins": [
       "expo-video",
       [

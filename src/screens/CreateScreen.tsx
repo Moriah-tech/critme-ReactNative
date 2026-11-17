@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Alert,
+  BackHandler,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -48,11 +50,31 @@ export function CreateScreen({ video, onClose, onPosted }: Props) {
     setEditing(false);
   };
 
+  // Shared by the on-screen ← arrow and Android's hardware back button.
   const onBack = () => {
+    // Publishing (or just posted): let it finish, so nothing is half-posted.
+    if (flow.phase === 'publishing' || flow.phase === 'posted') return;
     if (editing) return setEditing(false);
     if (flow.phase === 'takes') return flow.backToCompose();
+    if (flow.message) {
+      Alert.alert('Discard this post?', 'Your video and message will be lost.', [
+        { text: 'Keep editing', style: 'cancel' },
+        { text: 'Discard', style: 'destructive', onPress: onClose },
+      ]);
+      return;
+    }
     onClose();
   };
+
+  // Android hardware back. Always handled here, so the app never closes mid-post.
+  // No dependency list: re-registers each render so it always sees the latest state.
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      onBack();
+      return true;
+    });
+    return () => sub.remove();
+  });
 
   const upload = async () => {
     const post = await flow.publish();
