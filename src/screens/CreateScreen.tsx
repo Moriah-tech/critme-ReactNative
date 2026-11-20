@@ -1,15 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ComponentRef, useEffect, useRef, useState } from 'react';
 import {
   Alert,
   BackHandler,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useKeyboardInset } from '../useKeyboardInset';
 import Svg, { Path } from 'react-native-svg';
 import { CritHeader } from '../components/CritAvatar';
 import { GradientButton } from '../components/GradientButton';
@@ -22,9 +21,12 @@ import { VideoStage } from '../components/VideoStage';
 import { useCritFlow } from '../hooks/useCritFlow';
 import { colors } from '../theme';
 import type { LocalVideo, Post } from '../api';
+import type { MediaEdits } from '../media/edits';
 
 type Props = {
   video: LocalVideo;
+  /** AA text / CC captions from the camera, shown over the preview and kept with the post. */
+  edits?: MediaEdits;
   onClose: () => void;
   onPosted: (post: Post) => void;
 };
@@ -33,12 +35,17 @@ type Props = {
  * Composer → Crit's takes → Upload, all on one screen. The video stays at the
  * top and the sheet below it changes with each step.
  */
-export function CreateScreen({ video, onClose, onPosted }: Props) {
+export function CreateScreen({ video, edits, onClose, onPosted }: Props) {
   const insets = useSafeAreaInsets();
   const flow = useCritFlow(video);
   const [editing, setEditing] = useState(false);
   const [sentCount, setSentCount] = useState(0);
   const inputRef = useRef<InputBarHandle>(null);
+  const root = useRef<ComponentRef<typeof View>>(null);
+  // Same keyboard handling as the feed and story editor: measure how much of this screen the
+  // keyboard covers. KeyboardAvoidingView does nothing on Android (edge-to-edge window), so the
+  // caption bar stayed at the bottom behind the keyboard.
+  const kbInset = useKeyboardInset(root);
 
   useEffect(() => {
     flow.startUpload().catch(() => {}); // upload in the background while they type
@@ -86,21 +93,17 @@ export function CreateScreen({ video, onClose, onPosted }: Props) {
   const hasMessage = flow.message.length > 0;
 
   return (
-    <View style={[styles.screen, { paddingTop: insets.top }]}>
+    <View ref={root} style={[styles.screen, { paddingTop: insets.top }]}>
       <View style={styles.top}>
         <Pressable onPress={onBack} hitSlop={12} style={styles.back} accessibilityLabel="Back">
           <Svg width={22} height={22} viewBox="0 0 24 24">
             <Path d="M15 5l-7 7 7 7" stroke="#fff" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" fill="none" />
           </Svg>
         </Pressable>
-        <VideoStage uri={video.uri} />
+        <VideoStage uri={video.uri} edits={edits} />
       </View>
 
-      <KeyboardAvoidingView
-        style={styles.sheet}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={insets.top}
-      >
+      <View style={[styles.sheet, { paddingBottom: kbInset }]}>
         <View style={styles.sheetBody}>
           {inCompose ? (
             <View style={styles.compose}>
@@ -137,7 +140,7 @@ export function CreateScreen({ video, onClose, onPosted }: Props) {
         </View>
 
         {editing ? (
-          <View style={{ paddingBottom: Platform.OS === 'ios' ? 0 : 8 }}>
+          <View style={{ paddingBottom: kbInset > 0 ? 0 : Math.max(insets.bottom, 8) }}>
             <InputBar ref={inputRef} initialText={flow.message} onSend={onSend} />
           </View>
         ) : (
@@ -155,7 +158,7 @@ export function CreateScreen({ video, onClose, onPosted }: Props) {
             ) : null}
           </View>
         )}
-      </KeyboardAvoidingView>
+      </View>
     </View>
   );
 }

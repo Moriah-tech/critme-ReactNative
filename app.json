@@ -16,8 +16,20 @@
       "expo-video",
       [
         "expo-image-picker",
-        { "photosPermission": "CritMe needs access to your videos so you can post them." }
-      ]
+        {
+          "photosPermission": "CritMe needs access to your videos so you can post them."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "CritMe uses your camera so you can record videos to post.",
+          "microphonePermission": "CritMe uses your microphone to record sound with your videos.",
+          "recordAudioAndroid": true,
+          "barcodeScannerEnabled": false
+        }
+      ],
+      "expo-secure-store"
     ]
   }
 }

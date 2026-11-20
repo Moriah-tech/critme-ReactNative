@@ -1,6 +1,7 @@
 import { createHttpApi } from './http';
 import { createMockApi } from './mock';
 import type { CritMeApi } from './types';
+import { getStoredToken } from '../auth/tokenStore';
 
 /**
  * Connect the backend here:
@@ -11,7 +12,7 @@ import type { CritMeApi } from './types';
 const BASE_URL = process.env.EXPO_PUBLIC_CRITME_API_URL;
 
 async function getToken(): Promise<string | null> {
-  return null; // TODO: return the signed-in user's access token
+  return getStoredToken(); // the signed-in user's access token (null when signed out)
 }
 
 export const api: CritMeApi = BASE_URL ? createHttpApi(BASE_URL, getToken) : createMockApi();

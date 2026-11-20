@@ -34,3 +34,36 @@ export const dotGradient = {
 
 /** One full pulse of the message-bar glow (cyan, then purple, then cyan). */
 export const GLOW_PERIOD_MS = 2600;
+
+/**
+ * Font families loaded in src/fonts.ts. On Android a custom family must carry
+ * its own weight, so use these names instead of fontWeight.
+ */
+export const fonts = {
+  inter: 'Inter_400Regular',
+  interMedium: 'Inter_500Medium',
+  interSemiBold: 'Inter_600SemiBold',
+  interBold: 'Inter_700Bold',
+  grotesk: 'SpaceGrotesk_400Regular',
+  groteskSemiBold: 'SpaceGrotesk_600SemiBold',
+  groteskBold: 'SpaceGrotesk_700Bold',
+  /** Sora: Explore/Stories tabs (700 active, 600 inactive) and the "CritMe" title, as in Demo13. */
+  tabActive: 'Sora_700Bold',
+  tabInactive: 'Sora_600SemiBold',
+} as const;
+
+/** Feed tokens measured from Demo13 (computed styles). */
+export const feed = {
+  black: '#050506',
+  glassFill: 'rgba(30,30,35,0.62)',
+  glassBorder: 'rgba(255,255,255,0.12)',
+  critBarFill: 'rgba(16,18,26,0.92)',
+  critBarBorder: 'rgba(255,255,255,0.14)',
+  sheetFill: 'rgba(18,18,22,0.97)',
+  sheetBorder: 'rgba(255,255,255,0.08)',
+  teal: '#5EEAD4',
+  nameGrey: '#858585',
+} as const;
+
+/** Crit Meter gradient stops (cyan → purple → magenta). */
+export const meterGradient = ['#67E8F9', '#A855F7', '#D946EF'] as const;

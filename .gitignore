@@ -4,3 +4,26 @@ dist/
 ios/
 android/
 .env
+
+# IDE
+.idea/
+.vscode/
+
+# Old standalone reference material
+src/reference/
+
+# Logs
+*.log
+npm-debug.*
+yarn-error.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Expo / signing credentials
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision

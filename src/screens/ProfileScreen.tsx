@@ -18,9 +18,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 type Props = {
   onNavigate?: (screen: 'home' | 'friends' | 'inbox' | 'profile') => void;
   onCreate?: () => void;
+  /** App renders the shared BottomNav instead of this screen's own nav. */
+  hideOwnNav?: boolean;
 };
 
-export function ProfileScreen({ onNavigate, onCreate }: Props) {
+export function ProfileScreen({ onNavigate, onCreate, hideOwnNav = false }: Props) {
   const insets = useSafeAreaInsets();
 
   const [name, setName] = useState('Marcus Bronley');
@@ -97,7 +99,7 @@ export function ProfileScreen({ onNavigate, onCreate }: Props) {
         showsVerticalScrollIndicator={false}
       >
         <Pressable
-          style={styles.settings}
+          style={[styles.settings, { top: insets.top + 18 + 8 }]}
           onPress={() =>
             Alert.alert('Settings', 'Settings options will be added here.')
           }
@@ -145,6 +147,7 @@ export function ProfileScreen({ onNavigate, onCreate }: Props) {
         </View>
       </ScrollView>
 
+      {!hideOwnNav && (
       <View style={[styles.bottomNav, { paddingBottom: insets.bottom + 8 }]}>
         <Pressable onPress={() => onNavigate?.('home')}>
           <Text style={styles.navText}>Home</Text>
@@ -166,6 +169,7 @@ export function ProfileScreen({ onNavigate, onCreate }: Props) {
           <Text style={styles.activeNavText}>Profile</Text>
         </Pressable>
       </View>
+      )}
 
       <Modal
         visible={editing}

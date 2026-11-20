@@ -35,9 +35,11 @@ const notes = ['Your note', 'alex_c', 'jordan', 'sam_w', 'maya'];
 type Props = {
   onNavigate?: (screen: 'home' | 'friends' | 'inbox' | 'profile') => void;
   onCreate?: () => void;
+  /** App renders the shared BottomNav instead of this screen's own nav. */
+  hideOwnNav?: boolean;
 };
 
-export function InboxScreen({ onNavigate, onCreate }: Props) {
+export function InboxScreen({ onNavigate, onCreate, hideOwnNav = false }: Props) {
   const insets = useSafeAreaInsets();
   const [search, setSearch] = useState('');
   const [activeTab, setActiveTab] = useState<'chats' | 'notifications'>('chats');
@@ -52,10 +54,6 @@ export function InboxScreen({ onNavigate, onCreate }: Props) {
 
   const openChat = (name: string) => {
     Alert.alert(name, 'The individual chat screen will be connected later.');
-  };
-
-  const openSettings = () => {
-    Alert.alert('Settings', 'Inbox settings will be added later.');
   };
 
   return (
@@ -89,20 +87,6 @@ export function InboxScreen({ onNavigate, onCreate }: Props) {
       </Text>
     </Pressable>
   </View>
-
-  <Pressable onPress={openSettings} style={styles.settingsButton}>
-    <Svg width={23} height={23} viewBox="0 0 24 24" fill="none">
-      <Circle cx="12" cy="12" r="3"
-        stroke="#FAFAFA" strokeWidth="1.7" />
-      <Path
-        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-        stroke="#FAFAFA"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Svg>
-  </Pressable>
 </View>
 
 {/* Search */}
@@ -284,6 +268,8 @@ renderItem={({ item, index }) => (
 
      
 
+      {!hideOwnNav && (
+        <>
       {/* Bottom Navigation */}
       <View
         style={[
@@ -326,6 +312,8 @@ renderItem={({ item, index }) => (
           <Text style={styles.navText}>Profile</Text>
         </Pressable>
       </View>
+        </>
+      )}
     </View>
   );
 }
@@ -357,9 +345,6 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.4)',
     fontSize: 15,
     fontWeight: '500',
-  },
-  settingsButton: {
-    padding: 5,
   },
   searchContainer: {
     height: 36,

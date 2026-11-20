@@ -5,8 +5,7 @@ This is the CritMe demo flow rebuilt as React Native components for the app.
 Explore → **+** → pick a video → tap the bubble and write a message → **Initialize** → swipe Crit's takes → **Upload** → the post appears at the top of Explore.
 
 The app runs end to end on a mock API with the two demo takes. To connect the backend, set one environment variable and add your auth token (see below).
-
-- Expo SDK 58, React Native 0.88, TypeScript (strict). `npm run typecheck` passes and the Android bundle builds.
+dle builds.
 - Native packages: `expo-video`, `expo-image-picker`, `expo-linear-gradient`, `react-native-svg`, `react-native-safe-area-context`.
 
 ## Run it
